@@ -129,7 +129,7 @@ File contents :
 
 ### Step 3 )  2 Hypotheses
 
-#### **เขียน 2 ข้อนี้
+#### **เขียน 2 ข้อนี้**
 
 **Hypothesis A:** Attacker ยังมีช่องทางกลับเข้าระบบ / มี persistence อยู่
 
@@ -145,7 +145,7 @@ File contents :
 
 > หมายเหตุ: “ยังอยู่ในระบบ” อาจหมายถึงยังมี active connection หรือมี persistence/backdoor ที่ทำให้กลับเข้ามาได้
 
-#### **เลือก 1 hypothesis แล้วตอบ:
+#### **เลือก 1 hypothesis แล้วตอบ:**
 
 1. คุณเลือก Hypothesis ใด?
 2. Confidence Level: `High` / `Medium` / `Low`
